@@ -2,14 +2,11 @@ import React from 'react';
 import { OFFICIAL_CHECKPOINTS } from '../constants/checkpoints';
 import { secondsToHms } from '../utils/time';
 
-/**
- * Minimalny podgląd listy punktów i ich oficjalnych limitów.
- * (Pełna tabela z raportami pojawi się w innym story/epicu.)
- */
-export default function CheckpointsPreview() {
+export default function CheckpointsPreview({ checkpoints }) {
+  const list = checkpoints && checkpoints.length ? checkpoints : OFFICIAL_CHECKPOINTS;
   return (
     <section className="card">
-      <h3 className="mt-0 mb-8">Domyślne punkty kontrolne i limity</h3>
+      <h3 className="mt-0 mb-8">Punkty kontrolne i limity</h3>
       <div className="tableWrap">
         <table>
           <thead>
@@ -19,7 +16,7 @@ export default function CheckpointsPreview() {
             </tr>
           </thead>
           <tbody>
-            {OFFICIAL_CHECKPOINTS.map(cp => (
+            {list.map(cp => (
               <tr key={cp.km}>
                 <td>{cp.km}</td>
                 <td className="mono">{secondsToHms(cp.cutoffSeconds)}</td>
@@ -29,7 +26,7 @@ export default function CheckpointsPreview() {
         </table>
       </div>
       <p className="hint" style={{ marginTop: 8 }}>
-        Źródło: stała konfiguracyjna w <code>constants/checkpoints.js</code>.
+        {checkpoints ? 'Załadowano trasę z JSON.' : 'Źródło: domyślna konfiguracja OFFICIAL_CHECKPOINTS.'}
       </p>
     </section>
   );

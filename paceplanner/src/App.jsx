@@ -11,6 +11,7 @@ export default function App() {
     setStartClockText,
     spectatorReports,
     addOrReplaceReport,
+    deleteReport,             // pobierz z hooka
   } = usePersistentRaceState();
 
   return (
@@ -30,7 +31,10 @@ export default function App() {
           startClockText={startClockText}
           onAddOrReplaceReport={addOrReplaceReport}
         />
-        <ReportsPreview reports={spectatorReports} />
+        <ReportsPreview
+          reports={spectatorReports}
+          onDeleteReport={deleteReport}   // przekazanie
+        />
       </div>
     </div>
   );

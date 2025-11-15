@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 export function usePersistentRaceState() {
   const [startClockText, setStartClockText] = useState('');
-  const [spectatorReports, setSpectatorReports] = useState([]); // [{ km:Number, secs:Number }]
+  const [spectatorReports, setSpectatorReports] = useState([]); // [{ km, secs }]
 
   function addOrReplaceReport(km, secsFromStart) {
     setSpectatorReports(prev => {
@@ -15,10 +15,16 @@ export function usePersistentRaceState() {
     });
   }
 
+  // NOWE: usuwanie raportu po km
+  function deleteReport(km) {
+    setSpectatorReports(prev => prev.filter(r => r.km !== km));
+  }
+
   return {
     startClockText,
     setStartClockText,
     spectatorReports,
     addOrReplaceReport,
+    deleteReport,            // eksport
   };
 }

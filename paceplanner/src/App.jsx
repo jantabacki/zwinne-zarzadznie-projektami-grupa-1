@@ -1,6 +1,7 @@
 import React from 'react';
 import StartTimeControls from './components/StartTimeControls.jsx';
 import CheckpointsPreview from './components/CheckpointsPreview.jsx';
+import CheckpointsTable from './components/CheckpointsTable.jsx';
 import ReportForm from './components/ReportForm.jsx';
 import ReportsPreview from './components/ReportsPreview.jsx';
 import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
@@ -11,12 +12,12 @@ export default function App() {
     setStartClockText,
     spectatorReports,
     addOrReplaceReport,
-    deleteReport,             // pobierz z hooka
+    deleteReport,
   } = usePersistentRaceState();
 
   return (
     <div className="wrap">
-      <h1>PacePlanner — raporty</h1>
+      <h1>PacePlanner — tabela punktów</h1>
 
       <div className="grid">
         <StartTimeControls
@@ -33,7 +34,15 @@ export default function App() {
         />
         <ReportsPreview
           reports={spectatorReports}
-          onDeleteReport={deleteReport}   // przekazanie
+          onDeleteReport={deleteReport}
+        />
+      </div>
+
+      {/* Nowa tabela (łącząca oficjalne + raporty) */}
+      <div className="grid" style={{ marginTop: 16 }}>
+        <CheckpointsTable
+          startClockText={startClockText}
+          reports={spectatorReports}
         />
       </div>
     </div>

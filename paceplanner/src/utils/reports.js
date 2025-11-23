@@ -43,3 +43,17 @@ export function parseReportTextToElapsedSeconds(reportText, startClockSeconds) {
   // w przeciwnym razie traktuj jako MM:SS
   return a * 60 + b;
 }
+
+/**
+ * Zwraca raport bezpośrednio poprzedzający dany kilometr (albo null).
+ * reports: [{ km, secs }] — zakładamy posortowane rosnąco lub sortujemy lokalnie.
+ */
+export function findPreviousReport(reports, km) {
+  if (!Array.isArray(reports) || reports.length === 0) return null;
+  const sorted = reports.slice().sort((a, b) => a.km - b.km);
+  let prev = null;
+  for (const r of sorted) {
+    if (r.km < km) prev = r; else break;
+  }
+  return prev;
+}

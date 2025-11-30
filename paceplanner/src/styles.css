@@ -1,0 +1,10 @@
+/* Kolory statusów */
+.delta { padding: 2px 8px; border-radius: 999px; background: var(--soft); }
+.delta.ok   { background: rgba(0,200,83,.12);  color: #00C853; }
+.delta.warn { background: rgba(245,158,11,.14); color: #f59e0b; }
+.delta.bad  { background: rgba(239,68,68,.16); color: #ef4444; }
+
+/* Tag źródła (opcjonalnie lekko różnicujemy) */
+.tag        { display:inline-block; padding:2px 8px; border-radius:999px; background:#24314f; color:#cdd6f7; font-size:12px }
+.tag.is-report { background:#253a2d; color:#81d9a5; }
+.tag.is-mix    { background:#2b2a4a; color:#b8a7ff; }

@@ -4,6 +4,8 @@ import CheckpointsPreview from './components/CheckpointsPreview.jsx';
 import CheckpointsTable from './components/CheckpointsTable.jsx';
 import ReportForm from './components/ReportForm.jsx';
 import ReportsPreview from './components/ReportsPreview.jsx';
+import Simulations from './components/Simulations.jsx';
+import FinishProjection from './components/FinishProjection.jsx';
 import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
 
 export default function App() {
@@ -17,7 +19,7 @@ export default function App() {
 
   return (
     <div className="wrap">
-      <h1>PacePlanner — tabela punktów</h1>
+      <h1>PacePlanner — projekcja mety</h1>
 
       <div className="grid">
         <StartTimeControls
@@ -38,11 +40,26 @@ export default function App() {
         />
       </div>
 
-      {/* Nowa tabela (łącząca oficjalne + raporty) */}
       <div className="grid" style={{ marginTop: 16 }}>
         <CheckpointsTable
           startClockText={startClockText}
           reports={spectatorReports}
+        />
+      </div>
+
+      <div className="grid" style={{ marginTop: 16 }}>
+        <Simulations
+          startClockText={startClockText}
+          reports={spectatorReports}
+        />
+      </div>
+
+      {/* NOWOŚĆ: dedykowany panel projekcji mety */}
+      <div className="grid" style={{ marginTop: 16 }}>
+        <FinishProjection
+          startClockText={startClockText}
+          reports={spectatorReports}
+          totalKm={50} // jeśli będziesz chciał wspierać inne dystanse, zrób to parametryzowalne
         />
       </div>
     </div>

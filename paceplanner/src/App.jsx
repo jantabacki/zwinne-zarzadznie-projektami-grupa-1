@@ -6,6 +6,7 @@ import ReportForm from './components/ReportForm.jsx';
 import ReportsPreview from './components/ReportsPreview.jsx';
 import Simulations from './components/Simulations.jsx';
 import FinishProjection from './components/FinishProjection.jsx';
+import ShareLinkPanel from './components/ShareLinkPanel.jsx';
 import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
 
 export default function App() {
@@ -17,9 +18,11 @@ export default function App() {
     deleteReport,
   } = usePersistentRaceState();
 
+  const shareableState = { startClockText, spectatorReports };
+
   return (
     <div className="wrap">
-      <h1>PacePlanner — projekcja mety</h1>
+      <h1>PacePlanner — udostępnianie stanu</h1>
 
       <div className="grid">
         <StartTimeControls
@@ -40,6 +43,11 @@ export default function App() {
         />
       </div>
 
+      {/* NOWE: panel kopiowania linku */}
+      <div className="grid" style={{ marginTop: 16 }}>
+        <ShareLinkPanel state={shareableState} />
+      </div>
+
       <div className="grid" style={{ marginTop: 16 }}>
         <CheckpointsTable
           startClockText={startClockText}
@@ -54,12 +62,11 @@ export default function App() {
         />
       </div>
 
-      {/* NOWOŚĆ: dedykowany panel projekcji mety */}
       <div className="grid" style={{ marginTop: 16 }}>
         <FinishProjection
           startClockText={startClockText}
           reports={spectatorReports}
-          totalKm={50} // jeśli będziesz chciał wspierać inne dystanse, zrób to parametryzowalne
+          totalKm={50}
         />
       </div>
     </div>

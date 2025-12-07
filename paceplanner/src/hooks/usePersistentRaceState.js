@@ -1,13 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { loadPersistedState, savePersistedState } from '../utils/storage';
+import { loadStateFromUrl, stripShareParamFromUrl } from '../utils/urlState';
 
 export function usePersistentRaceState() {
-  // 1) Inicjalizacja ze storage (raz)
-  const initial = useMemo(() => loadPersistedState() || { startClockText: '', spectatorReports: [] }, []);
+  // 1) Inicjalizacja: najpierw URL (?s=), potem localStorage, na końcu pusty stan
+  const initial = useMemo(() => {
+    const fromUrl = loadStateFromUrl();
+    if (fromUrl) return fromUrl;
+    return loadPersistedState() || { startClockText: '', spectatorReports: [] };
+  }, []);
+
   const [startClockText, setStartClockText] = useState(initial.startClockText);
   const [spectatorReports, setSpectatorReports] = useState(initial.spectatorReports);
 
-  // 2) API do modyfikacji raportów
+  // 2) API modyfikacji (bez zmian)
   function addOrReplaceReport(km, secsFromStart) {
     let action = 'added';
     setSpectatorReports(prev => {
@@ -29,7 +35,7 @@ export function usePersistentRaceState() {
     setSpectatorReports(prev => prev.filter(r => r.km !== km));
   }
 
-  // 3) Autosave (z lekkim debounce, by nie pisać przy każdym keystroke)
+  // 3) Autosave (debounce) — zapisujemy zawsze, także gdy start był z URL
   const saveTimer = useRef(null);
   useEffect(() => {
     if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -38,6 +44,11 @@ export function usePersistentRaceState() {
     }, 200);
     return () => clearTimeout(saveTimer.current);
   }, [startClockText, spectatorReports]);
+
+  // 4) Jeżeli start był z URL (mieścił ?s=), „czyścimy” parametr po pierwszym renderze
+  useEffect(() => {
+    stripShareParamFromUrl();
+  }, []);
 
   return {
     startClockText,

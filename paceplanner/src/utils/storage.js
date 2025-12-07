@@ -1,12 +1,11 @@
 import { PERSISTENCE_STORAGE_KEY } from '../constants/config';
 
-/** Bezpieczny parse JSON (z fallbackiem na null). */
 function safeParse(json) {
   try { return JSON.parse(json); } catch { return null; }
 }
 
-/** Minimalna walidacja stanu z localStorage. */
-function normalizeState(raw) {
+/** ➜ TERAZ eksportujemy (użyje go też URL loader) */
+export function normalizeState(raw) {
   if (!raw || typeof raw !== 'object') return null;
 
   const startClockText = typeof raw.startClockText === 'string' ? raw.startClockText : '';
@@ -20,7 +19,6 @@ function normalizeState(raw) {
   return { startClockText, spectatorReports };
 }
 
-/** Wczytaj stan aplikacji z localStorage. Zwraca {startClockText, spectatorReports} lub null. */
 export function loadPersistedState() {
   try {
     const raw = localStorage.getItem(PERSISTENCE_STORAGE_KEY);
@@ -32,7 +30,6 @@ export function loadPersistedState() {
   }
 }
 
-/** Zapisz stan aplikacji do localStorage. */
 export function savePersistedState(state) {
   try {
     const payload = {
@@ -41,7 +38,5 @@ export function savePersistedState(state) {
       spectatorReports: Array.isArray(state.spectatorReports) ? state.spectatorReports : [],
     };
     localStorage.setItem(PERSISTENCE_STORAGE_KEY, JSON.stringify(payload));
-  } catch {
-    // nic — np. tryb prywatny / brak dostępu
-  }
+  } catch {}
 }

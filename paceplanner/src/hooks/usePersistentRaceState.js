@@ -1,13 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { loadPersistedState, savePersistedState } from '../utils/storage';
 
 export function usePersistentRaceState() {
-  const [startClockText, setStartClockText] = useState('');
-  const [spectatorReports, setSpectatorReports] = useState([]); // [{ km, secs }]
+  // 1) Inicjalizacja ze storage (raz)
+  const initial = useMemo(() => loadPersistedState() || { startClockText: '', spectatorReports: [] }, []);
+  const [startClockText, setStartClockText] = useState(initial.startClockText);
+  const [spectatorReports, setSpectatorReports] = useState(initial.spectatorReports);
 
-  /**
-   * Dodaje nowy raport lub NADPISUJE istniejący dla tego samego km.
-   * Zwraca string: 'added' | 'replaced'.
-   */
+  // 2) API do modyfikacji raportów
   function addOrReplaceReport(km, secsFromStart) {
     let action = 'added';
     setSpectatorReports(prev => {
@@ -28,6 +28,16 @@ export function usePersistentRaceState() {
   function deleteReport(km) {
     setSpectatorReports(prev => prev.filter(r => r.km !== km));
   }
+
+  // 3) Autosave (z lekkim debounce, by nie pisać przy każdym keystroke)
+  const saveTimer = useRef(null);
+  useEffect(() => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      savePersistedState({ startClockText, spectatorReports });
+    }, 200);
+    return () => clearTimeout(saveTimer.current);
+  }, [startClockText, spectatorReports]);
 
   return {
     startClockText,

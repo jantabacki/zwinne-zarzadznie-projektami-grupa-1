@@ -7,6 +7,7 @@ import ReportsPreview from './components/ReportsPreview.jsx';
 import Simulations from './components/Simulations.jsx';
 import FinishProjection from './components/FinishProjection.jsx';
 import ShareLinkPanel from './components/ShareLinkPanel.jsx';
+import ThemeToggle from './components/ThemeToggle.jsx';
 import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
 
 export default function App() {
@@ -22,14 +23,19 @@ export default function App() {
 
   return (
     <div className="wrap">
-      <h1>PacePlanner — udostępnianie stanu</h1>
+      <h1>PacePlanner</h1>
 
-      <div className="grid">
+      <div className="grid mt-16">
+        <ThemeToggle />
         <StartTimeControls
           startClockText={startClockText}
           onChangeStart={setStartClockText}
         />
+      </div>
+
+      <div className="grid mt-16">
         <CheckpointsPreview />
+        <ShareLinkPanel state={shareableState} />
       </div>
 
       <div className="grid mt-16">
@@ -41,11 +47,6 @@ export default function App() {
           reports={spectatorReports}
           onDeleteReport={deleteReport}
         />
-      </div>
-
-      {/* NOWE: panel kopiowania linku */}
-      <div className="grid mt-16">
-        <ShareLinkPanel state={shareableState} />
       </div>
 
       <div className="grid mt-16">

@@ -1,21 +1,34 @@
-/* === Bazowe zmienne (spójny wygląd) === */
-:root{
+/* === Motywy (Dark/Light) === */
+:root {
+  --accent: #2B8EF0; /* dynamiczny akcent, zmieniany przez UI */
+  --ok:#00C853;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --radius:12px;
+  --gap:16px;
+  --gap-lg:24px;
+}
+
+/* Domyślnie dark; JS podmieni data-theme na light, jeśli trzeba */
+:root[data-theme="dark"]{
   --bg:#0b1020;
   --panel:#121a2e;
   --soft:#1a2542;
   --text:#e9eefc;
   --muted:#a9b4d0;
-
-  --accent:#2B8EF0;
-  --ok:#00C853;
-  --warn:#f59e0b;
-  --bad:#ef4444;
   --border:#2a3559;
-
-  --radius:12px;
-  --gap:16px;           /* podstawowy odstęp */
-  --gap-lg:24px;        /* większy odstęp pionowy */
 }
+
+:root[data-theme="light"]{
+  --bg:#f6f8ff;
+  --panel:#ffffff;
+  --soft:#eef2ff;
+  --text:#0f172a;
+  --muted:#475569;
+  --border:#d3ddff;
+}
+
+html, body { transition: background-color .2s linear, color .2s linear; }
 
 /* === Reset/typografia skrócona === */
 * { box-sizing: border-box; }

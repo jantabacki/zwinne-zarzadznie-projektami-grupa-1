@@ -1,10 +1,116 @@
-/* Kolory statusów */
-.delta { padding: 2px 8px; border-radius: 999px; background: var(--soft); }
-.delta.ok   { background: rgba(0,200,83,.12);  color: #00C853; }
-.delta.warn { background: rgba(245,158,11,.14); color: #f59e0b; }
-.delta.bad  { background: rgba(239,68,68,.16); color: #ef4444; }
+/* === Bazowe zmienne (spójny wygląd) === */
+:root{
+  --bg:#0b1020;
+  --panel:#121a2e;
+  --soft:#1a2542;
+  --text:#e9eefc;
+  --muted:#a9b4d0;
 
-/* Tag źródła (opcjonalnie lekko różnicujemy) */
-.tag        { display:inline-block; padding:2px 8px; border-radius:999px; background:#24314f; color:#cdd6f7; font-size:12px }
+  --accent:#2B8EF0;
+  --ok:#00C853;
+  --warn:#f59e0b;
+  --bad:#ef4444;
+  --border:#2a3559;
+
+  --radius:12px;
+  --gap:16px;           /* podstawowy odstęp */
+  --gap-lg:24px;        /* większy odstęp pionowy */
+}
+
+/* === Reset/typografia skrócona === */
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, Segoe UI, Roboto; }
+h1,h2,h3{ margin:0 0 8px; }
+.mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+/* === Kontener strony === */
+.wrap{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* === Siatka sekcji === */
+.grid{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap);
+}
+@media (min-width: 900px){
+  .grid{ grid-template-columns: 1fr 1fr; }
+}
+
+/* Użyteczne odstępy narzędziowe */
+.mt-16{ margin-top: var(--gap); }
+.mt-24{ margin-top: var(--gap-lg); }
+
+/* === Karty/sekcje === */
+.card{
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+/* Globalny odstęp między sąsiadującymi kartami w tej samej kolumnie */
+.card + .card{ margin-top: var(--gap); }
+
+/* === Wiersze formularzy === */
+.row{
+  display: flex;
+  gap: var(--gap);
+  align-items: center;
+}
+input[type="text"],
+input[type="number"],
+textarea{
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--soft);
+  color: var(--text);
+  outline: none;
+}
+input[readonly]{ opacity: .9; }
+
+/* === Przycisk === */
+.btn{
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #071021;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn.danger{
+  border-color: var(--bad);
+  background: rgba(239,68,68,.16);
+  color: var(--bad);
+}
+
+/* === Tabela === */
+.tableWrap{ overflow: auto; }
+table{ width:100%; border-collapse: collapse; }
+th, td{
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+thead th{ color: var(--muted); font-weight: 600; }
+
+/* === Drobne akcenty === */
+.hint{ color: var(--muted); margin: 6px 0 0; }
+.tag{ display:inline-block; padding:2px 8px; border-radius:999px; background:#24314f; color:#cdd6f7; font-size:12px }
+
+/* Kolory statusów dla różnic (z poprzednich story) */
+.delta { padding: 2px 8px; border-radius: 999px; background: var(--soft); }
+.delta.ok   { background: rgba(0,200,83,.12);  color: var(--ok); }
+.delta.warn { background: rgba(245,158,11,.14); color: var(--warn); }
+.delta.bad  { background: rgba(239,68,68,.16); color: var(--bad); }
+
+/* Warianty tagów (jeśli używasz w tabeli) */
 .tag.is-report { background:#253a2d; color:#81d9a5; }
 .tag.is-mix    { background:#2b2a4a; color:#b8a7ff; }

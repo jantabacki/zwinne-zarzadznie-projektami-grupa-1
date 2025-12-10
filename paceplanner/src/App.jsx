@@ -32,7 +32,7 @@ export default function App() {
         <CheckpointsPreview />
       </div>
 
-      <div className="grid" style={{ marginTop: 16 }}>
+      <div className="grid mt-16">
         <ReportForm
           startClockText={startClockText}
           onAddOrReplaceReport={addOrReplaceReport}
@@ -44,25 +44,25 @@ export default function App() {
       </div>
 
       {/* NOWE: panel kopiowania linku */}
-      <div className="grid" style={{ marginTop: 16 }}>
+      <div className="grid mt-16">
         <ShareLinkPanel state={shareableState} />
       </div>
 
-      <div className="grid" style={{ marginTop: 16 }}>
+      <div className="grid mt-16">
         <CheckpointsTable
           startClockText={startClockText}
           reports={spectatorReports}
         />
       </div>
 
-      <div className="grid" style={{ marginTop: 16 }}>
+      <div className="grid mt-16">
         <Simulations
           startClockText={startClockText}
           reports={spectatorReports}
         />
       </div>
 
-      <div className="grid" style={{ marginTop: 16 }}>
+      <div className="grid mt-16">
         <FinishProjection
           startClockText={startClockText}
           reports={spectatorReports}

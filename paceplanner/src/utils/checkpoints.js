@@ -1,6 +1,7 @@
 import { secondsToHms } from './time';
 
 /**
+<<<<<<< HEAD
  * Akceptowany JSON:
  * [
  *   { "km": 18, "cutoffSeconds": 6720 },          // sekundy od startu
@@ -31,6 +32,37 @@ export function normalizeCheckpoints(jsonInput) {
     }
 
     // cutoffSeconds albo cutoff (HH:MM:SS)
+=======
+ * Wejście może być:
+ *  A) tablicą obiektów: [ { km, cutoffSeconds } | { km, cutoff: "HH:MM:SS" }, ... ]
+ *  B) obiektem: { name?: string, checkpoints: [ ...jak wyżej... ] }
+ * Zwraca: { checkpoints: Array<{km:number, cutoffSeconds:number}>, name?: string }
+ */
+export function normalizeCheckpointsFile(jsonInput) {
+  let data = jsonInput;
+  if (typeof data === 'string') {
+    try { data = JSON.parse(data); } catch { throw new Error('Niepoprawny JSON.'); }
+  }
+
+  let name;
+  let items;
+  if (Array.isArray(data)) {
+    items = data;
+  } else if (data && typeof data === 'object' && Array.isArray(data.checkpoints)) {
+    name = typeof data.name === 'string' && data.name.trim() ? data.name.trim() : undefined;
+    items = data.checkpoints;
+  } else {
+    throw new Error('Spodziewano tablicy lub obiektu z polem "checkpoints".');
+  }
+
+  const out = [];
+  for (const [idx, item] of items.entries()) {
+    const path = `element[${idx}]`;
+    if (!item || typeof item !== 'object') throw new Error(`${path} nie jest obiektem.`);
+    const km = Number(item.km);
+    if (!Number.isFinite(km) || km <= 0) throw new Error(`${path}.km musi być dodatnią liczbą.`);
+
+>>>>>>> epic-7
     let cutoffSeconds = null;
     if (item.cutoffSeconds != null) {
       cutoffSeconds = Number(item.cutoffSeconds);
@@ -39,6 +71,7 @@ export function normalizeCheckpoints(jsonInput) {
       }
     } else if (item.cutoff != null) {
       cutoffSeconds = hhmmssToSeconds(String(item.cutoff));
+<<<<<<< HEAD
       if (cutoffSeconds == null) {
         throw new Error(`${path}.cutoff ma niepoprawny format HH:MM:SS.`);
       }
@@ -56,17 +89,41 @@ export function normalizeCheckpoints(jsonInput) {
   // Walidacje dodatkowe: rosnące limity czasu (opcjonalnie, ale sensowne)
   for (let i=1; i<sorted.length; i++) {
     if (sorted[i].cutoffSeconds < sorted[i-1].cutoffSeconds) {
+=======
+      if (cutoffSeconds == null) throw new Error(`${path}.cutoff ma niepoprawny format HH:MM:SS.`);
+    } else {
+      throw new Error(`${path} wymaga cutoffSeconds lub cutoff (HH:MM:SS).`);
+    }
+    out.push({ km, cutoffSeconds });
+  }
+
+  // ostatnia definicja wygrywa, sort rosnący po km
+  const byKm = new Map(out.map(o => [o.km, o]));
+  const sorted = Array.from(byKm.values()).sort((a, b) => a.km - b.km);
+
+  // dodatkowa walidacja: limit musi rosnąć z km
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].cutoffSeconds < sorted[i - 1].cutoffSeconds) {
+>>>>>>> epic-7
       const prev = `${sorted[i-1].km}km (${secondsToHms(sorted[i-1].cutoffSeconds)})`;
       const cur  = `${sorted[i].km}km (${secondsToHms(sorted[i].cutoffSeconds)})`;
       throw new Error(`Limit czasu powinien rosnąć: ${prev} → ${cur}.`);
     }
   }
 
+<<<<<<< HEAD
   return sorted;
 }
 
 function hhmmssToSeconds(text) {
   const parts = text.split(':').map(x=>x.trim());
+=======
+  return { checkpoints: sorted, name };
+}
+
+function hhmmssToSeconds(text) {
+  const parts = text.split(':').map(x => x.trim());
+>>>>>>> epic-7
   if (parts.length !== 3) return null;
   const [h, m, s] = parts.map(Number);
   if (![h,m,s].every(Number.isFinite)) return null;

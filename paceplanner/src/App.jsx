@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 import React, { useEffect, useMemo, useState } from 'react';
->>>>>>> epic-7
 import StartTimeControls from './components/StartTimeControls.jsx';
 import CheckpointsPreview from './components/CheckpointsPreview.jsx';
 import CheckpointsTable from './components/CheckpointsTable.jsx';
@@ -12,138 +8,93 @@ import Simulations from './components/Simulations.jsx';
 import FinishProjection from './components/FinishProjection.jsx';
 import ShareLinkPanel from './components/ShareLinkPanel.jsx';
 import ThemeToggle from './components/ThemeToggle.jsx';
-<<<<<<< HEAD
-import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
-=======
+import RouteManager from './components/RouteManager.jsx';
 
 import { usePersistentRaceState } from './hooks/usePersistentRaceState.js';
 import { OFFICIAL_CHECKPOINTS } from './constants/checkpoints';
-import RouteFileLoader from './components/RouteFileLoader.jsx';
-import { loadRouteCheckpoints, saveRouteCheckpoints } from './utils/storage';
->>>>>>> epic-7
+import { loadRoutes, saveRoutes, loadActiveRouteId, saveActiveRouteId } from './utils/storage';
 
 export default function App() {
   const {
-    startClockText,
-    setStartClockText,
-    spectatorReports,
-    addOrReplaceReport,
-    deleteReport,
+    startClockText, setStartClockText,
+    spectatorReports, addOrReplaceReport, deleteReport,
   } = usePersistentRaceState();
 
-<<<<<<< HEAD
-=======
-  // === TRASA (checkpointy) — z pliku lub domyślna ===
-  const [routeName, setRouteName] = useState('');
-  const [routeCheckpoints, setRouteCheckpoints] = useState(() => loadRouteCheckpoints() || OFFICIAL_CHECKPOINTS);
+  // ===== Kolekcja tras =====
+  const [routes, setRoutes] = useState(() => loadRoutes());
+  const [activeRouteId, setActiveRouteId] = useState(() => loadActiveRouteId());
 
-  function applyRoute(checkpoints, name) {
-    setRouteCheckpoints(checkpoints);
-    if (name) setRouteName(name);
-    saveRouteCheckpoints(checkpoints);
+  // Jeśli brak tras — dołóż domyślną (OFFICIAL_CHECKPOINTS)
+  useEffect(() => {
+    if (routes.length === 0) {
+      const defaultRoute = { id: 'default', name: 'Domyślna trasa', checkpoints: OFFICIAL_CHECKPOINTS };
+      setRoutes([defaultRoute]);
+      saveRoutes([defaultRoute]);
+      setActiveRouteId('default');
+      saveActiveRouteId('default');
+    } else if (!activeRouteId) {
+      setActiveRouteId(routes[0].id);
+      saveActiveRouteId(routes[0].id);
+    }
+  }, []); // init once
+
+  // refresh (po akcjach w RouteManager – wczytujemy ponownie z localStorage)
+  function refreshRoutes() {
+    const rs = loadRoutes();
+    setRoutes(rs);
+    if (!rs.find(r => r.id === activeRouteId)) {
+      const first = rs[0]?.id || 'default';
+      setActiveRouteId(first);
+      saveActiveRouteId(first);
+    }
   }
 
-  function resetRoute() {
-    setRouteCheckpoints(OFFICIAL_CHECKPOINTS);
-    setRouteName('');
-  }
-
-  // (opcjonalnie) pokaż nazwę w tytule
-  const title = useMemo(
-    () => routeName ? `PacePlanner — ${routeName}` : 'PacePlanner',
-    [routeName]
+  const activeRoute = useMemo(
+    () => routes.find(r => r.id === activeRouteId) || routes[0] || { checkpoints: OFFICIAL_CHECKPOINTS, name: 'Domyślna trasa' },
+    [routes, activeRouteId]
   );
 
+  const title = useMemo(
+    () => activeRoute?.name ? `PacePlanner — ${activeRoute.name}` : 'PacePlanner',
+    [activeRoute?.name]
+  );
   useEffect(() => { document.title = title; }, [title]);
 
->>>>>>> epic-7
   const shareableState = { startClockText, spectatorReports };
 
   return (
     <div className="wrap">
-<<<<<<< HEAD
-      <h1>PacePlanner</h1>
-=======
       <h1>{title}</h1>
->>>>>>> epic-7
 
       <div className="grid mt-16">
         <ThemeToggle />
-        <StartTimeControls
-          startClockText={startClockText}
-          onChangeStart={setStartClockText}
-        />
+        <StartTimeControls startClockText={startClockText} onChangeStart={setStartClockText} />
       </div>
 
-<<<<<<< HEAD
+      {/* Menedżer tras po lewej, podgląd aktywnej po prawej */}
       <div className="grid mt-16">
-        <CheckpointsPreview />
-        <ShareLinkPanel state={shareableState} />
-      </div>
-
-      <div className="grid mt-16">
-=======
-      {/* Panel wczytywania trasy z pliku + podgląd trasy */}
-      <div className="grid mt-16">
-        <RouteFileLoader
-          onApply={applyRoute}
-          onReset={resetRoute}
-          currentRouteName={routeName}
+        <RouteManager
+          routes={routes}
+          activeId={activeRouteId}
+          onChangeActive={setActiveRouteId}
+          onRefresh={refreshRoutes}
         />
-        <CheckpointsPreview checkpoints={routeCheckpoints} />
+        <CheckpointsPreview checkpoints={activeRoute.checkpoints} />
       </div>
 
       <div className="grid mt-16">
         <ShareLinkPanel state={shareableState} />
->>>>>>> epic-7
-        <ReportForm
-          startClockText={startClockText}
-          onAddOrReplaceReport={addOrReplaceReport}
-        />
-<<<<<<< HEAD
-=======
+        <ReportForm startClockText={startClockText} onAddOrReplaceReport={addOrReplaceReport} />
       </div>
 
       <div className="grid mt-16">
->>>>>>> epic-7
-        <ReportsPreview
-          reports={spectatorReports}
-          onDeleteReport={deleteReport}
-        />
-<<<<<<< HEAD
+        <ReportsPreview reports={spectatorReports} onDeleteReport={deleteReport} />
+        <CheckpointsTable startClockText={startClockText} reports={spectatorReports} checkpoints={activeRoute.checkpoints} />
       </div>
 
       <div className="grid mt-16">
-        <CheckpointsTable
-          startClockText={startClockText}
-          reports={spectatorReports}
-=======
-        <CheckpointsTable
-          startClockText={startClockText}
-          reports={spectatorReports}
-          checkpoints={routeCheckpoints}
->>>>>>> epic-7
-        />
-      </div>
-
-      <div className="grid mt-16">
-        <Simulations
-          startClockText={startClockText}
-          reports={spectatorReports}
-<<<<<<< HEAD
-        />
-      </div>
-
-      <div className="grid mt-16">
-=======
-          checkpoints={routeCheckpoints}
-        />
->>>>>>> epic-7
-        <FinishProjection
-          startClockText={startClockText}
-          reports={spectatorReports}
-          totalKm={50}
-        />
+        <Simulations startClockText={startClockText} reports={spectatorReports} checkpoints={activeRoute.checkpoints} />
+        <FinishProjection startClockText={startClockText} reports={spectatorReports} totalKm={50} />
       </div>
     </div>
   );

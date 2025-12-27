@@ -57,7 +57,9 @@ export default function FinishProjection({ startClockText, reports, totalKm = 50
             <tr>
               <td className="mono"><strong>{secondsToHms(proj.projectedSeconds)}</strong></td>
               <td className="mono">{wall}</td>
-              <td className={`mono delta ${spareClass}`}>{formatSpare(spare)}</td>
+              <td className="mono">
+                <span className={`delta ${spareClass}`}>{formatSpare(spare)}</span>
+              </td>
               <td><span className="tag">{basisLabel}</span></td>
             </tr>
           </tbody>

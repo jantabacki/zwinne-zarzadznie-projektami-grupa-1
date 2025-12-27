@@ -1,15 +1,21 @@
 /* === Motywy (Dark/Light) === */
 :root {
-  --accent: #2B8EF0; /* dynamiczny akcent, zmieniany przez UI */
-  --ok:#00C853;
-  --warn:#f59e0b;
-  --bad:#ef4444;
-  --radius:12px;
-  --gap:16px;
-  --gap-lg:24px;
+  --accent: #2B8EF0;   /* dynamiczny akcent, zmieniany przez UI */
+  --ok:    #00C853;
+  --warn:  #f59e0b;
+  --bad:   #ef4444;
+
+  --radius: 12px;
+  --gap:    16px;
+  --gap-lg: 24px;
+
+  --shadow: 0 6px 20px rgba(0,0,0,.25);
+  --shadow-soft: 0 3px 10px rgba(0,0,0,.18);
+
+  /* maksymalna szerokość pojedynczej karty */
+  --card-max: 800px; /* zmieniaj swobodnie: 680–960px sprawdza się dobrze */
 }
 
-/* Domyślnie dark; JS podmieni data-theme na light, jeśli trzeba */
 :root[data-theme="dark"]{
   --bg:#0b1020;
   --panel:#121a2e;
@@ -30,28 +36,61 @@
 
 html, body { transition: background-color .2s linear, color .2s linear; }
 
+/* === Pełne tło i wysokość dokumentu === */
+/* kluczowa zmiana: NIE używamy height:100% na html/body – wtedy tło kończy się na wysokości viewportu */
+html { min-height: 100%; }
+body {
+  display: flow;
+  min-height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
+#root {
+  min-height: 100vh;
+  background-color: var(--bg);
+}
+
+/* === Kontener strony === */
+.wrap {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;             /* nie zawężaj całości – karty wycentrujemy poniżej */
+  background-color: var(--bg);
+}
+
 /* === Reset/typografia skrócona === */
 * { box-sizing: border-box; }
-html, body, #root { height: 100%; }
-body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 ui-sans-serif, system-ui, Segoe UI, Roboto; }
 h1,h2,h3{ margin:0 0 8px; }
 .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
-/* === Kontener strony === */
-.wrap{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px;
+h1 {
+  text-align: left;
+  margin: 0 0 16px;
+  padding-left: 4px;
 }
 
-/* === Siatka sekcji === */
-.grid{
+/* === Siatka sekcji (centrowanie kart i tracks) === */
+.grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr;               /* 1 kolumna na małych ekranach */
   gap: var(--gap);
+  width: 100%;
+  place-items: stretch center;              /* items: pion = stretch, poziom = center */
+  justify-content: center;                  /* wyśrodkuj kolumny (tracks) kiedy nie wypełniają szerokości */
 }
-@media (min-width: 900px){
-  .grid{ grid-template-columns: 1fr 1fr; }
+
+@media (min-width: 900px) {
+  .grid {
+    /* elastyczna liczba kolumn, każda ma min. 420px i max 1fr */
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    justify-content: center;
+  }
 }
 
 /* Użyteczne odstępy narzędziowe */
@@ -59,15 +98,27 @@ h1,h2,h3{ margin:0 0 8px; }
 .mt-24{ margin-top: var(--gap-lg); }
 
 /* === Karty/sekcje === */
-.card{
+.card {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 14px;
+
+  /* klucz do centrowania: nie na pełną szerokość kolumny i z auto-marginesem */
+  width: min(100%, var(--card-max));
+  margin-inline: auto;                      /* <— wycentruj kartę w kolumnie */
+  box-sizing: border-box;
+
+  box-shadow: var(--shadow-soft);
+  transition: box-shadow .15s ease, transform .15s ease, background-color .2s ease, border-color .2s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
 }
 
-/* Globalny odstęp między sąsiadującymi kartami w tej samej kolumnie */
-.card + .card{ margin-top: var(--gap); }
+/* Odstęp między sąsiadującymi kartami w tej samej kolumnie (na mobile) */
+.card + .card { margin-top: var(--gap); }
 
 /* === Wiersze formularzy === */
 .row{
@@ -97,7 +148,10 @@ input[readonly]{ opacity: .9; }
   color: #071021;
   font-weight: 700;
   cursor: pointer;
+  transition: filter .15s ease, transform .1s ease;
 }
+.btn:hover { filter: brightness(1.05); transform: translateY(-0.5px); }
+.btn:active { transform: translateY(0); }
 .btn.danger{
   border-color: var(--bad);
   background: rgba(239,68,68,.16);
@@ -118,12 +172,12 @@ thead th{ color: var(--muted); font-weight: 600; }
 .hint{ color: var(--muted); margin: 6px 0 0; }
 .tag{ display:inline-block; padding:2px 8px; border-radius:999px; background:#24314f; color:#cdd6f7; font-size:12px }
 
-/* Kolory statusów dla różnic (z poprzednich story) */
+/* Kolory statusów dla różnic */
 .delta { padding: 2px 8px; border-radius: 999px; background: var(--soft); }
 .delta.ok   { background: rgba(0,200,83,.12);  color: var(--ok); }
 .delta.warn { background: rgba(245,158,11,.14); color: var(--warn); }
 .delta.bad  { background: rgba(239,68,68,.16); color: var(--bad); }
 
-/* Warianty tagów (jeśli używasz w tabeli) */
+/* Warianty tagów */
 .tag.is-report { background:#253a2d; color:#81d9a5; }
 .tag.is-mix    { background:#2b2a4a; color:#b8a7ff; }

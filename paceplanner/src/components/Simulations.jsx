@@ -59,7 +59,9 @@ export default function Simulations({ startClockText, reports = [], checkpoints 
                     <td>{r.km}</td>
                     <td className="mono"><strong>{secondsToHms(r.projectedSeconds)}</strong></td>
                     <td className="mono">{wall}</td>
-                    <td className={`mono delta ${spareClass}`}>{formatSpare(spare)}</td>
+                    <td className="mono">
+                      <span className={`delta ${spareClass}`}>{formatSpare(spare)}</span>
+                    </td>
                     <td><span className="tag">{r.basis === 'segment' ? 'tempo odcinka' : 'tempo średnie'}</span></td>
                   </tr>
                 );
